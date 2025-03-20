@@ -5,7 +5,8 @@ rootFilesList="./rootFileList.dat"
 outHistF="./hist.root"
 
 #Or analyse single root file 
-inRootFiles="../data_sim/lstTel_00000_sim.root"
+#inRootFiles="../data_sim/lstTel_00000_sim.root"
+inRootFiles="../data_sim/lstTel_00000_039718583_sim.root"
 outHistSingleF="./histSingle.root"
 
 make -f Makefilelstana clean; make -f Makefilelstana runlstana;

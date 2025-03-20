@@ -65,7 +65,8 @@ void lstana::Loop(TString histOut){
   Double_t trk_mirror_impact_point_R;
   ///
   vector<TH2D*> h2_cam_v;
-  vector<TH1D*> h1_phi_v;  
+  vector<TH1D*> h1_phi_v;
+  vector<TH1D*> h1_true_info_v;
   ///
   Int_t event_counter = 0;
   ///
@@ -108,6 +109,7 @@ void lstana::Loop(TString histOut){
       if(trk_theta_deg<1.2){
 	if(trk_mirror_impact_point_R<10){
 	  if(trk_mom_GeV>10){
+	    h1_nPhot_cut->Fill(nPhot);
 	    TString h2_tmp_name = "h2_cam_";
 	    h2_tmp_name += event_counter;
 	    h2_tmp_name += "_ev";
@@ -116,10 +118,22 @@ void lstana::Loop(TString histOut){
 	    h1_phi_tmp_name += "_ev";
 	    TH2D *h2_tmp = new TH2D(h2_tmp_name.Data(),h2_tmp_name.Data(), 70,-1.2,1.2, 70,-1.2,1.2);
 	    TH1D *h1_phi_tmp = new TH1D(h1_phi_tmp_name.Data(),h1_phi_tmp_name.Data(), 40,-200.0,200.0);
+	    TString h1_true_tmp_name = "h1_true_";
+	    h1_true_tmp_name += event_counter;
+	    h1_true_tmp_name += "_ev";
+	    TH1D *h1_true_tmp = new TH1D(h1_true_tmp_name.Data(),h1_true_tmp_name.Data(), 100,0.0,100);
+	    ///
+	    h1_true_tmp->SetBinContent(1,trk_mirror_impact_point_X);
+	    h1_true_tmp->SetBinContent(2,trk_mirror_impact_point_Y);
+	    h1_true_tmp->SetBinContent(3,trk_mirror_impact_point_Z);
+	    h1_true_tmp->SetBinContent(4,trk_theta_deg);
+	    h1_true_tmp->SetBinContent(5,trk_phi_deg);
+	    ///
 	    simulate_optical_systems(h2_tmp, h1_phi_tmp);
 	    h2_cam_v.push_back(h2_tmp);
 	    h1_phi_v.push_back(h1_phi_tmp);
-	    h1_nPhot_cut->Fill(nPhot);
+	    h1_true_info_v.push_back(h1_true_tmp);
+	    //
 	    //save_to_csv(trk_mirror_impact_point_X,trk_mirror_impact_point_Y,trk_mirror_impact_point_Z,0.1,event_counter);
 	  }
 	}
@@ -144,6 +158,7 @@ void lstana::Loop(TString histOut){
   for(unsigned int ii = 0;ii<h2_cam_v.size();ii++){
     h2_cam_v.at(ii)->Write();
     h1_phi_v.at(ii)->Write();
+    h1_true_info_v.at(ii)->Write();
   }
   rootFile->cd();
   //////
@@ -215,19 +230,21 @@ void lstana::simulate_optical_systems(TH2D *h2, TH1D *h1_phi){
   Double_t phot_r_mirror;
   for(Int_t i = 0;i<nPhot;i++){
     if(Wavelength[i]>250.0 && Wavelength[i]<700.0){
-      phot_r_mirror = TMath::Sqrt(PosX[i]*PosX[i] + PosY[i]*PosY[i]);
-      //cout<<phot_r_mirror<<endl;
-      if(phot_r_mirror/1000.0<_lst_Rmax_m){
-	TVector3 v(MomX[i],MomY[i],MomZ[i]);
-	phot_theta = TMath::Pi() - v.Theta();
-	phot_phi = v.Phi();
-	TVector2 v_cam;
-	v_cam.SetMagPhi(_lst_effective_focal_length_m*TMath::Tan(phot_theta), phot_phi);
-	phot_x_cam = v_cam.X();
-	phot_y_cam = v_cam.Y();
-	h2->Fill(phot_x_cam,phot_y_cam);
-	//cout<<phot_x_cam<<endl;
-	h1_phi->Fill(phot_phi*180.0/TMath::Pi());
+      if(_rnd->Uniform()<=1.0){
+	phot_r_mirror = TMath::Sqrt(PosX[i]*PosX[i] + PosY[i]*PosY[i]);
+	//cout<<phot_r_mirror<<endl;
+	if(phot_r_mirror/1000.0<_lst_Rmax_m){
+	  TVector3 v(MomX[i],MomY[i],MomZ[i]);
+	  phot_theta = TMath::Pi() - v.Theta();
+	  phot_phi = v.Phi();
+	  TVector2 v_cam;
+	  v_cam.SetMagPhi(_lst_effective_focal_length_m*TMath::Tan(phot_theta), phot_phi);
+	  phot_x_cam = v_cam.X();
+	  phot_y_cam = v_cam.Y();
+	  h2->Fill(phot_x_cam,phot_y_cam);
+	  //cout<<phot_x_cam<<endl;
+	  h1_phi->Fill(phot_phi*180.0/TMath::Pi());
+	}
       }
     }
   }

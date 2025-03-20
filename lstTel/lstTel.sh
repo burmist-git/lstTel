@@ -45,13 +45,13 @@ else
 	if [ $# -eq 2 ]; then
 	    rndseed=$(date +%N)
 	    jobID=$2
-	    outname="lstTel_"$jobID"_sim.root"
+	    outname="lstTel_"$jobID"_"$rndseed"_sim.root"
 	    echo "rndseed = $rndseed"
 	    echo "jobID   = $jobID"
 	    echo "outname = $outname"
 	    #
 	    cp lstTel lstTel$jobID
-	    ./lstTel$jobID run.mac $rndseed $outname mu- 5 180.0 0
+	    ./lstTel$jobID run.mac $rndseed $outname mu- 12 180.0 0
         else
             printHelp
         fi

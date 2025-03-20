@@ -49,8 +49,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   Int_t generation_type;
   G4double particleMomentum_min = _particleMomentum;
   G4double particleMomentum_max = 200.0*GeV;
-  G4double R_impact_max = 17.0*m;
-  G4double theta_max = 2.0*deg;
+  G4double R_impact_max = 15.0*m;
+  G4double theta_max = 0.0*deg;
   G4double power_m_two_dist;
   G4double theta_cos_flat;
   G4double phi_flat;
