@@ -1,0 +1,31 @@
+ROOTCFLAGS    = $(shell $(ROOTSYS)/bin/root-config --cflags)
+ROOTLIBS      = $(shell $(ROOTSYS)/bin/root-config --libs)
+ROOTGLIBS     = $(shell $(ROOTSYS)/bin/root-config --glibs)
+
+CXX  = g++
+CXX += -I./	
+CXX += -I./obj/
+
+CXXFLAGS  = -g -Wall -fPIC -Wno-deprecated
+CXXFLAGS += $(ROOTCFLAGS)
+
+OUTLIB = ./obj/
+
+#----------------------------------------------------#
+
+all: runlstana	
+
+runlstana: runlstana.cpp obj/lstana.o obj/lstanabase.o
+	$(CXX) -o runlstana runlstana.cpp $(OUTLIB)*.o $(ROOTCFLAGS) $(ROOTLIBS) $(ROOTGLIBS)
+
+obj/lstana.o: src/lstana.cpp src/lstana.hh obj/lstanabase.o
+	$(CXX) $(CXXFLAGS) -c -I. -o $(OUTLIB)lstana.o $<
+
+obj/lstanabase.o: src/lstanabase.cpp src/lstanabase.hh
+	$(CXX) $(CXXFLAGS) -c -I. -o $(OUTLIB)lstanabase.o $<
+
+clean:
+	rm -f runlstana
+	rm -f *~
+	rm -f src/*~
+	rm -f $(OUTLIB)*.o
