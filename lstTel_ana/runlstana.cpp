@@ -40,6 +40,15 @@ int main(int argc, char *argv[]){
     a.Loop(outRootFileF);
   }
   else if(argc == 4 && atoi(argv[1])==2){
+    TString inRootFiles = argv[2];
+    TString outRootFileF = argv[3];
+    cout<<"--> Parameter calculation from the WF <--"<<endl
+	<<"inRootFiles : "<<inRootFiles<<endl
+	<<"outRootFileF  : "<<outRootFileF<<endl;
+    lstana a( inRootFiles, 1);
+    a.Loop01(outRootFileF);
+  }
+  else if(argc == 4 && atoi(argv[1])==2){
     // if else
   }
   else{
@@ -48,6 +57,9 @@ int main(int argc, char *argv[]){
       	<<"       [2] - file with list of the root files"<<endl
 	<<"       [3] - name of root file with histograms"<<endl;
     cout<<" runID [1] = 1 (execution ID number)"<<endl
+      	<<"       [2] - in root files"<<endl
+	<<"       [3] - name of root file with histograms"<<endl;
+    cout<<" runID [1] = 2 (execution ID number - Loop01)"<<endl
       	<<"       [2] - in root files"<<endl
 	<<"       [3] - name of root file with histograms"<<endl;
   }

@@ -32,9 +32,49 @@ then
     printHelp
 else
     if [ "$1" = "-d" ]; then
-	./lstTel run.mac 123 lstTel.root mu- 5 180.0 0
+	#./lstTel run.mac 1232 lstTel_180theta_0phi_0mx_0my.root mu- 100 180.0 0.0    0.0    0.0
+	#./lstTel run.mac 1233 lstTel_180theta_0phi_1mx_0my.root mu- 100 180.0 0.0  100.0    0.0
+	#./lstTel run.mac 121232 lstTel_180theta_0phi_2mx_0my.root mu- 100 180.0 0.0  200.0    0.0
+	#./lstTel run.mac 123 lstTel_180theta_0phi_3mx_0my.root mu- 100 180.0 0.0  300.0    0.0
+	#./lstTel run.mac 123 lstTel_180theta_0phi_4mx_0my.root mu- 100 180.0 0.0  400.0    0.0
+	#./lstTel run.mac 123 lstTel_180theta_0phi_5mx_0my.root mu- 100 180.0 0.0  500.0    0.0
+	#./lstTel run.mac 12313 lstTel_180theta_0phi_6mx_0my.root mu- 100 180.0 0.0  600.0    0.0
+	#./lstTel run.mac 123 lstTel_180theta_0phi_7mx_0my.root mu- 100 180.0 0.0  700.0    0.0
+	#
+	#./lstTel run.mac 1232 lstTel_179theta_0phi_0mx_0my.root mu- 100 179.0 0.0    0.0    0.0
+	#./lstTel run.mac 1233 lstTel_179theta_0phi_1mx_0my.root mu- 100 179.0 0.0  100.0    0.0
+	#./lstTel run.mac 121232 lstTel_179theta_0phi_2mx_0my.root mu- 100 179.0 0.0  200.0    0.0
+	#./lstTel run.mac 123 lstTel_179theta_0phi_3mx_0my.root mu- 100 179.0 0.0  300.0    0.0
+	#./lstTel run.mac 123 lstTel_179theta_0phi_4mx_0my.root mu- 100 179.0 0.0  400.0    0.0
+	#./lstTel run.mac 123 lstTel_179theta_0phi_5mx_0my.root mu- 100 179.0 0.0  500.0    0.0
+	#./lstTel run.mac 12313 lstTel_179theta_0phi_6mx_0my.root mu- 100 179.0 0.0  600.0    0.0
+	#./lstTel run.mac 123 lstTel_179theta_0phi_7mx_0my.root mu- 100 179.0 0.0  700.0    0.0
+	#
+	#./lstTel run.mac 1232 lstTel_179.5theta_0phi_0mx_0my.root mu- 100 179.5 0.0    0.0    0.0
+	#./lstTel run.mac 1233 lstTel_179.5theta_0phi_1mx_0my.root mu- 100 179.5 0.0  100.0    0.0
+	#./lstTel run.mac 121232 lstTel_179.5theta_0phi_2mx_0my.root mu- 100 179.5 0.0  200.0    0.0
+	#./lstTel run.mac 123 lstTel_179.5theta_0phi_3mx_0my.root mu- 100 179.5 0.0  300.0    0.0
+	#./lstTel run.mac 123 lstTel_179.5theta_0phi_4mx_0my.root mu- 100 179.5 0.0  400.0    0.0
+	#./lstTel run.mac 123345 lstTel_179.5theta_0phi_5mx_0my.root mu- 100 179.5 0.0  500.0    0.0
+	./lstTel run.mac 123133 lstTel_179.5theta_0phi_6mx_0my.root mu- 100 179.5 0.0  600.0    0.0
+	./lstTel run.mac 123 lstTel_179.5theta_0phi_7mx_0my.root mu- 100 179.5 0.0  700.0    0.0
     elif [ "$1" = "-v" ]; then
-	./lstTel vis.mac 123 lstTel_vis.root mu- 20 180.0 0
+	./lstTel vis.mac 123 lstTel_vis_0mx_0my.root mu- 100 180.0 0.0 0.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_1mx_0my.root mu- 100 180.0 0.0 100.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_2mx_0my.root mu- 100 180.0 0.0 200.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_3mx_0my.root mu- 100 180.0 0.0 300.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_4mx_0my.root mu- 100 180.0 0.0 400.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_5mx_0my.root mu- 100 180.0 0.0 500.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_6mx_0my.root mu- 100 180.0 0.0 600.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_7mx_0my.root mu- 100 180.0 0.0 700.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_8mx_0my.root mu- 100 180.0 0.0 800.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_9mx_0my.root mu- 100 180.0 0.0 900.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_10mx_0my.root mu- 100 180.0 0.0 1000.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_11mx_0my.root mu- 100 180.0 0.0 1100.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_12mx_0my.root mu- 100 180.0 0.0 1200.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_13mx_0my.root mu- 100 180.0 0.0 1300.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_14mx_0my.root mu- 100 180.0 0.0 1400.0 0.0
+	#./lstTel vis.mac 123 lstTel_vis_15mx_0my.root mu- 100 180.0 0.0 1500.0 0.0
     elif [ "$1" = "--screen" ]; then
 	run_screen_job_sh
     elif [ "$1" = "--screen_monitor" ]; then

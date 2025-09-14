@@ -77,6 +77,7 @@ target_link_libraries(lstTel ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 set(lstTel_SCRIPTS
   run.mac
   vis.mac
+  lstTel.sh
   )
 
 foreach(_script ${lstTel_SCRIPTS})

@@ -37,13 +37,15 @@ int main(int argc, char** argv)
   // Seed the random number generator manually
   //
 
-  if(argc!=8){
+  if(argc!=10){
     G4cout<<" ERROR of the input parameters !!! "<<G4endl
 	  <<"      [0] - vis.mac or run.mac or *.mac "<<G4endl
 	  <<"      [1] - seed "<<G4endl
 	  <<"      [2] - output root file name"<<G4endl
 	  <<"      [3] - name of the particle (e+, e-, mu+, mu-, pi+, pi-, kaon+, kaon-, proton, gamma)"<<G4endl;
     G4cout<<"      [4] - particle momentum (GeV/c)"<<G4endl
+	  <<"      [5] - particle theta (deg)"<<G4endl
+	  <<"      [6] - particle phi (deg)"<<G4endl
 	  <<"      [5] - particle theta (deg)"<<G4endl
 	  <<"      [6] - particle phi (deg)"<<G4endl;
     return 0;    
@@ -57,6 +59,8 @@ int main(int argc, char** argv)
     G4cout<<"     particle momentum     "<<argv[5]<<" GeV/c"<<G4endl
 	  <<"     particle theta        "<<argv[6]<<" deg"<<G4endl
 	  <<"     particle phi          "<<argv[7]<<" deg"<<G4endl;
+    G4cout<<"     x_disp_cm             "<<argv[8]<<" cm"<<G4endl
+	  <<"     y_disp_cm             "<<argv[9]<<" cm"<<G4endl;
   }
 
 
@@ -93,7 +97,9 @@ int main(int argc, char** argv)
   G4double particleMomentum = atof(argv[5]);
   G4double particleTheta = atof(argv[6]);
   G4double particlePhi = atof(argv[7]);
-
+  G4double x_disp_cm = atof(argv[8]);
+  G4double y_disp_cm = atof(argv[9]);
+  
   G4cout<<"particle Name = "<<particleName<<G4endl;
   G4cout<<"particle Momentum = "<<particleMomentum<<G4endl;
   G4cout<<"particle Theta = "<<particleTheta<<G4endl;
@@ -102,7 +108,8 @@ int main(int argc, char** argv)
   genAction->SetParticleMomentum(particleMomentum*GeV);
   genAction->SetThetaAngle(particleTheta*deg);
   genAction->SetPhiAngle(particlePhi*deg);
-
+  genAction->SetDisp( x_disp_cm, y_disp_cm);
+  
   TString ffName = "SteppingAction_";
   TString fffName = rootFileName;
   ffName += fffName;

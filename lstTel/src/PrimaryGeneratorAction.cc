@@ -22,7 +22,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction() :
   _particleMomentum(3.0*GeV),
   _PhiAngle(0.0*deg),
   _ThetaAngle(0.0*deg),
-  _singlePhoton(false)
+  _singlePhoton(false),
+  _x_disp_cm(0.0),
+  _y_disp_cm(0.0)
 {
   _particleGun = new G4ParticleGun(1);  
   _BunchXID = 0;
@@ -49,7 +51,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   Int_t generation_type;
   G4double particleMomentum_min = _particleMomentum;
   G4double particleMomentum_max = 200.0*GeV;
-  G4double R_impact_max = 15.0*m;
+  G4double R_impact_max = 0.0*m;
   G4double theta_max = 0.0*deg;
   G4double power_m_two_dist;
   G4double theta_cos_flat;
@@ -57,7 +59,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double xIntersection;
   G4double yIntersection;
   G4double zIntersection;
+  //G4double_t parabolicMirror_f  = 28.0*m;
+  //G4double_t sensitive_dZ0 = 1.0/(1.0/parabolicMirror_f - 1.0/(12000*m));
 
+  
+  //
   //
   //G4cout<<"_particleMomentum = "<<_particleMomentum<<G4endl
   //	<<"m                 = "<<m<<G4endl
@@ -67,14 +73,26 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //_PhiAngle   = _PhiAngle   + (-1 + 2*G4UniformRand())*2*TMath::Pi()/360;//mearing of one degree
   //
   //------------------
-  //generation_type = 0; // baseline
-  generation_type = 1;   // Emin (_particleMomentum_min) - Emax (_particleMomentum_max) baseline 1/E^2, (0 - R_max), (0 - theta_max)
+  generation_type = 0;    // baseline
+  //generation_type = 1;  // Emin (_particleMomentum_min) - Emax (_particleMomentum_max) baseline 1/E^2, (0 - R_max), (0 - theta_max)
   //------------------
   //
   if(generation_type == 0){
-    xInit = 0.0*cm;
-    yInit = 0.0*cm;
     zInit = 730.0*m;
+    xInit = -(1470.69*m*TMath::Tan(TMath::Pi() - _ThetaAngle)*TMath::Cos(_PhiAngle) - _x_disp_cm*cm); //cm
+    yInit = -(1470.69*m*TMath::Tan(TMath::Pi() - _ThetaAngle)*TMath::Sin(_PhiAngle) - _y_disp_cm*cm); //cm
+    G4cout<<"GENINFO ----------- "<<G4endl
+	  <<"GENINFO _ThetaAngle "<<_ThetaAngle*180.0/TMath::Pi()<<G4endl
+	  <<"GENINFO _PhiAngle   "<<_PhiAngle*180.0/TMath::Pi()<<G4endl
+	  <<"GENINFO _x_disp_cm  "<<_x_disp_cm<<G4endl
+	  <<"GENINFO _y_disp_cm  "<<_y_disp_cm<<G4endl
+	  <<"GENINFO xInit  "<<xInit<<G4endl
+	  <<"GENINFO yInit  "<<yInit<<G4endl
+	  <<"GENINFO zInit  "<<zInit<<G4endl
+	  <<"GENINFO -|-|-|-|-|- "<<G4endl;
+    //
+    //
+    //
     //
     _BunchXID++;
     particle = particleTable->FindParticle(_particleName);
@@ -84,6 +102,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     dX =  TMath::Sin(_ThetaAngle)*TMath::Cos(_PhiAngle);
     dY =  TMath::Sin(_ThetaAngle)*TMath::Sin(_PhiAngle);
     dZ =  TMath::Cos(_ThetaAngle);
+    //
+    G4cout<<"dX "<<dX<<G4endl
+	  <<"dY "<<dY<<G4endl
+	  <<"dZ "<<dZ<<G4endl;
     //
     dir.set(dX, dY, dZ);
     _particleGun->SetParticleDefinition(particle);

@@ -28,6 +28,9 @@ public:
   void SetPhiAngle(G4double val) {_PhiAngle = val;}
   void SetThetaAngle(G4double val) {_ThetaAngle = val;}
 
+  void SetDisp(G4double valx, G4double valy) { _x_disp_cm = valx; _y_disp_cm = valy;}
+
+  
   void SetSinglePhoton(G4bool singlePhoton) { _singlePhoton = singlePhoton;}
   G4bool SinglePhotonGenerator() { return _singlePhoton;}
   G4int GetBunchXID(){return _BunchXID;};
@@ -37,6 +40,8 @@ private:
   G4double _particleMomentum;
   G4double _PhiAngle;
   G4double _ThetaAngle;
+  G4double _x_disp_cm;
+  G4double _y_disp_cm;
 
   G4bool _singlePhoton;
 

@@ -273,7 +273,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 {
 
   bool overlapsChecking = false;
-  bool only_senstaive = true;
+  bool only_senstaive = false;
   bool build_camera_frame = false;
   
   //
@@ -281,6 +281,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double world_sizeX =  500.0*m;
   G4double world_sizeY =  500.0*m;
   G4double world_sizeZ = 1500.0*m;
+  //G4double world_sizeX =  50.0*m;
+  //G4double world_sizeY =  50.0*m;
+  //G4double world_sizeZ =  50.0*m;
   //
   //G4double world_AirZero_sizeX = world_sizeX - 1.0*m;
   //G4double world_AirZero_sizeY = world_sizeY - 1.0*m;
@@ -305,15 +308,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double parabolicMirror_Y0 = 0.0;
   //G4double parabolicMirror_Z0 = 0.0*cm + tel_Z_shift;
   G4double parabolicMirror_Z0 = 0.0*cm;
+  G4double parabolicMirror_wall_thickness = 10.0*cm;
   //
   G4double parabolicMirrorSub_R1 = parabolicMirror_R1;
-  G4double parabolicMirrorSub_H  = parabolicMirror_H + 20.0*cm;
+  G4double parabolicMirrorSub_H  = parabolicMirror_H + 2.0*parabolicMirror_wall_thickness;
   G4double parabolicMirrorSub_R2 = 2.0*TMath::Sqrt(parabolicMirrorSub_H*parabolicMirror_f);  
   //
   G4double parabolicMirrorFrame_minimum_wall_thickness = 5.0*mm;
   G4double parabolicMirrorFrame_sizeX = parabolicMirror_R2*2 + parabolicMirrorFrame_minimum_wall_thickness*2.0;
   G4double parabolicMirrorFrame_sizeY = parabolicMirrorFrame_sizeX;
   G4double parabolicMirrorFrame_sizeZ = parabolicMirror_H + parabolicMirrorFrame_minimum_wall_thickness;
+  //
+  G4double parabolicMirrorFrameParabol_R1 = parabolicMirror_R1;
+  G4double parabolicMirrorFrameParabol_H  = parabolicMirror_H + parabolicMirror_wall_thickness;
+  G4double parabolicMirrorFrameParabol_R2 = 2.0*TMath::Sqrt(parabolicMirrorFrameParabol_H*parabolicMirror_f);  
   //  
   G4double sensitive_sizeX = 3.1400*m;
   G4double sensitive_sizeY = 3.1400*m;
@@ -381,11 +389,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Transform3D Tr_sensitive;
   G4VSolid *sensitive_solid;
   G4LogicalVolume *sensitive_logical;
+  G4VSolid *sensitive_solid_shield;
+  G4LogicalVolume *sensitive_logical_shield;
   if (!only_senstaive){
     sensitive_solid = new G4Box("Sensitive", sensitive_sizeX/2.0, sensitive_sizeY/2.0, sensitive_sizeZ/2.0);
+    sensitive_solid_shield = new G4Box("shield", sensitive_sizeX/2.0, sensitive_sizeY/2.0, sensitive_sizeZ/2.0);
     //sensitive_logical = new G4LogicalVolume(sensitive_solid, AirZero, "Sensitive");
     //sensitive_logical = new G4LogicalVolume(sensitive_solid, C12H26, "Sensitive");
     sensitive_logical = new G4LogicalVolume(sensitive_solid, C4F10, "Sensitive");
+    sensitive_logical_shield = new G4LogicalVolume(sensitive_solid_shield, AluminumZero, "shield");
     Ta_sensitive.setX(sensitive_X0);
     Ta_sensitive.setY(sensitive_Y0);
     Ta_sensitive.setZ(sensitive_Z0);
@@ -393,6 +405,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     new G4PVPlacement(Tr_sensitive,       //Transformation
 		      sensitive_logical,  //its logical volume				 
 		      "Sensitive",        //its name
+		      world_logical,      //its mother  volume
+		      false,	        //no boolean operation
+		      0,                  //copy number
+		      overlapsChecking);  //overlapsChecking
+    Ta_sensitive.setX(sensitive_X0);
+    Ta_sensitive.setY(sensitive_Y0);
+    Ta_sensitive.setZ(sensitive_Z0 + sensitive_sizeZ*1.5);
+    Tr_sensitive = G4Transform3D(Ra_sensitive, Ta_sensitive);
+    new G4PVPlacement(Tr_sensitive,       //Transformation
+		      sensitive_logical_shield,  //its logical volume				 
+		      "shield",        //its name
 		      world_logical,      //its mother  volume
 		      false,	        //no boolean operation
 		      0,                  //copy number
@@ -444,6 +467,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Transform3D Tr_parabolicMirror_env;
   G4VSolid *parabolicMirror_env_solid = new G4Box("parabolicMirror_env", parabolicMirror_env_sizeX/2.0, parabolicMirror_env_sizeY/2.0, parabolicMirror_env_sizeZ/2.0);
   G4LogicalVolume *parabolicMirror_env_logical = new G4LogicalVolume(parabolicMirror_env_solid,Air,"parabolicMirror_env");
+  //
+  //
   Ta_parabolicMirror_env.setX(parabolicMirror_env_X0);
   Ta_parabolicMirror_env.setY(parabolicMirror_env_Y0);
   Ta_parabolicMirror_env.setZ(parabolicMirror_env_Z0);
@@ -462,12 +487,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Parabolic mirror
   //
-  G4Box* parabolicMirrorFrame_solid = new G4Box("parabolicMirrorFrame", parabolicMirrorFrame_sizeX/2.0, parabolicMirrorFrame_sizeY/2.0, parabolicMirrorFrame_sizeZ/2.0);
+  //G4Box* parabolicMirrorFrame_solid = new G4Box("parabolicMirrorFrame", parabolicMirrorFrame_sizeX/2.0, parabolicMirrorFrame_sizeY/2.0, parabolicMirrorFrame_sizeZ/2.0);
+  G4Paraboloid* parabolicMirrorFrame_solid = new G4Paraboloid("parabolicMirrorFrame", parabolicMirrorFrameParabol_H/2.0, parabolicMirrorFrameParabol_R1, parabolicMirrorFrameParabol_R2); 
   G4Paraboloid* parabolicMirrorSub_solid = new G4Paraboloid("parabolicMirrorSub", parabolicMirrorSub_H/2.0, parabolicMirrorSub_R1, parabolicMirrorSub_R2);
   G4RotationMatrix* rotMatrix = new G4RotationMatrix();
+  //G4ThreeVector transVector(0.0,
+  //			    0.0,
+  //			    parabolicMirrorFrame_minimum_wall_thickness-(parabolicMirrorFrame_sizeZ - parabolicMirrorSub_H)/2.0);
   G4ThreeVector transVector(0.0,
-			    0.0,
-			    parabolicMirrorFrame_minimum_wall_thickness-(parabolicMirrorFrame_sizeZ - parabolicMirrorSub_H)/2.0);
+  			    0.0,
+  			    parabolicMirror_wall_thickness);
   G4SubtractionSolid *parabolicMirror_solid = new G4SubtractionSolid("parabolicMirror_solid",parabolicMirrorFrame_solid,parabolicMirrorSub_solid,rotMatrix,transVector);
   G4LogicalVolume *parabolicMirror_logical = new G4LogicalVolume(parabolicMirror_solid, Aluminum,"parabolicMirror");
   G4RotationMatrix Ra_parabolicMirror;
@@ -501,14 +530,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   Ta_mirror_shield.setY(mirror_shield_Y0);
   Ta_mirror_shield.setZ(mirror_shield_Z0);
   Tr_mirror_shield = G4Transform3D(Ra_mirror_shield, Ta_mirror_shield);
-  if (!only_senstaive)
-    new G4PVPlacement(Tr_mirror_shield,        //Transformation
-		      mirror_shield_logical,   //its logical volume				 
-		      "mirror_shield_logical", //its name
-		      parabolicMirror_env_logical, //its mother volume (old world_logical)
-		      false,	             //no boolean operation
-		      0,                       //copy number
-		      overlapsChecking);       //overlapsChecking
+  //if (!only_senstaive)
+  //new G4PVPlacement(Tr_mirror_shield,        //Transformation
+  //		      mirror_shield_logical,   //its logical volume				 
+  //		      "mirror_shield_logical", //its name
+  //		      parabolicMirror_env_logical, //its mother volume (old world_logical)
+  //		      false,	             //no boolean operation
+  //		      0,                       //copy number
+  //		      overlapsChecking);       //overlapsChecking
 
   
   //

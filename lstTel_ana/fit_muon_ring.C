@@ -48,7 +48,7 @@ void test_D_rho_phi0(TH1D *h1_phi_test, int if_local_ring_in, int if_mu_inclinat
 
 double D_rho_phi0( double phi_deg, double *par);
 
-Int_t fit_muon_ring(){
+Int_t fit_muon_ring(Int_t evID = 1999){
   //
   TRandom3 *rnd = new TRandom3(12312312);
   //
@@ -59,9 +59,25 @@ Int_t fit_muon_ring(){
   //
   
   //
-  TH2D *h2 = (TH2D*)f01->Get("camimage/h2_cam_2_ev");
-  _h1_to_fit = (TH1D*)f01->Get("camimage/h1_phi_2_ev");
-  TH1D *h1_true_info = (TH1D*)f01->Get("camimage/h1_true_2_ev");  
+  TString h2_cam_ev_str = "camimage/h2_cam_";
+  h2_cam_ev_str += evID;
+  h2_cam_ev_str += "_ev";
+  //
+  TString h1_phi_ev_str = "camimage/h1_phi_";
+  h1_phi_ev_str += evID;
+  h1_phi_ev_str += "_ev";
+  //
+  TString h1_true_ev_str = "camimage/h1_true_";
+  h1_true_ev_str += evID;
+  h1_true_ev_str += "_ev";
+  //
+  TH2D *h2 = (TH2D*)f01->Get(h2_cam_ev_str.Data());
+  _h1_to_fit = (TH1D*)f01->Get(h1_phi_ev_str.Data());
+  TH1D *h1_true_info = (TH1D*)f01->Get(h1_true_ev_str.Data());  
+  //
+  //TH2D *h2 = (TH2D*)f01->Get("camimage/h2_cam_2_ev");
+  //_h1_to_fit = (TH1D*)f01->Get("camimage/h1_phi_2_ev");
+  //TH1D *h1_true_info = (TH1D*)f01->Get("camimage/h1_true_2_ev");  
   //
   Double_t trk_mirror_impact_point_X = h1_true_info->GetBinContent(1);
   Double_t trk_mirror_impact_point_Y = h1_true_info->GetBinContent(2);
@@ -221,6 +237,7 @@ Int_t fit_muon_ring(){
   //double rho_m_in = TMath::Sqrt(trk_mirror_impact_point_X*trk_mirror_impact_point_X + trk_mirror_impact_point_Y*trk_mirror_impact_point_Y);
   double rho_m_true = TMath::Sqrt(trk_mirror_impact_point_X*trk_mirror_impact_point_X + trk_mirror_impact_point_Y*trk_mirror_impact_point_Y);
   double rho_m_in = 10.0;
+  //double rho_m_in = rho_m_true;
   double phi0_deg_in = _h1_to_fit->GetBinCenter(_h1_to_fit->GetMaximumBin());
   
   double Ampl_out, rho_m_out, phi0_deg_out;
@@ -242,9 +259,10 @@ Int_t fit_muon_ring(){
   //		       Ampl_outerr, rho_m_outerr, phi0_deg_outerr);  
 
   fit_phi_with_Minuit( if_local_ring_in, if_mu_inclination_in, ksi_deg_in,
-		       mu_opt_axis_angla_deg_in, theta_c_deg_in, R_mirror_m_in, Ampl_in, rho_m_in, phi0_deg_in,
+  		       mu_opt_axis_angla_deg_in, theta_c_deg_in, R_mirror_m_in, Ampl_in, rho_m_in, phi0_deg_in,
   		       Ampl_out, rho_m_out, phi0_deg_out,
   		       Ampl_outerr, rho_m_outerr, phi0_deg_outerr);  
+
   //
   //
   TVector2 impact_par_v(trk_mirror_impact_point_X,trk_mirror_impact_point_Y);
@@ -253,9 +271,20 @@ Int_t fit_muon_ring(){
   //   <<"Phi0_true    "<<impact_par_rot_v.Phi()*180.0/TMath::Pi()<<endl;
   cout<<"rho_m_true   "<<rho_m_true<<endl
       <<"Phi0_true    "<<get_canonical_phi_from_Vphi(impact_par_rot_v.Phi())*180.0/TMath::Pi()<<endl;
+
+  //
+  //
+  cout<<"info: ID  "<<evID<<endl
+      <<"info: rho  "<<rho_m_true<<endl
+      <<"info: delta rho  "<<rho_m_true - rho_m_out<<endl
+      <<"info: delta Phi0 "<<get_canonical_phi_from_Vphi(impact_par_rot_v.Phi())*180.0/TMath::Pi() - phi0_deg_out<<endl;
+  //
+  //
   
   test_D_rho_phi0(h1_phi_test, if_local_ring_in, if_mu_inclination_in, ksi_deg_in,
-		  mu_opt_axis_angla_deg_in, theta_c_deg_in, R_mirror_m_in, Ampl_out, rho_m_out, phi0_deg_out);
+  		  mu_opt_axis_angla_deg_in, theta_c_deg_in, R_mirror_m_in, Ampl_out, rho_m_out, phi0_deg_out);
+  //test_D_rho_phi0(h1_phi_test, if_local_ring_in, if_mu_inclination_in, ksi_deg_in,
+  //		  mu_opt_axis_angla_deg_in, theta_c_deg_in, R_mirror_m_in, Ampl_in, rho_m_in, phi0_deg_in);
 
 
   //TVector2 test_vec(1,-1);
